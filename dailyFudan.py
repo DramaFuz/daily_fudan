@@ -161,9 +161,9 @@ class Zlapp(Fudan):
         city = geo_api_info["addressComponent"].get("city", "") or province
         district = geo_api_info["addressComponent"].get("district", "")
         if city == province:
-            area = " ".join(set((province, district)))
+            area = " ".join(list((province, district)))
         else:
-            area = " ".join(set((province, city, district)))
+            area = " ".join(list((province, city, district)))
         self.last_info.update(
                 {
                     "tw"      : "13",
