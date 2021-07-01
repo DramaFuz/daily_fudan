@@ -36,13 +36,13 @@ class Fudan:
         检查是否能打开登录页面
         :return: 登录页page source
         """
-        logging.info("Initiating...")
+        logging.debug("Initiating...")
         page_login = self.session.get(self.url_login)
 
         logging.debug("Response code: " + str(page_login.status_code))
 
         if page_login.status_code == 200:
-            logging.info("Initiated.")
+            logging.debug("Initiated.")
             return page_login.text
         else:
             logging.error("Failed to open the login page.")
@@ -79,7 +79,7 @@ class Fudan:
             "User-Agent": self.UA
         }
 
-        logging.info("Logining...")
+        logging.debug("Logining...")
         post = self.session.post(
                 self.url_login,
                 data=data,
@@ -89,7 +89,7 @@ class Fudan:
         logging.debug("Response code: %d" % post.status_code)
 
         if post.status_code == 302:
-            logging.info("Login.")
+            logging.debug("Login.")
         else:
             logging.error("Failed to login.")
             raise Exception("Failed to login.")
@@ -102,7 +102,7 @@ class Fudan:
         expire = self.session.get(exit_url).headers.get('Set-Cookie')
 
         if '01-Jan-1970' in expire:
-            logging.info("Logout.")
+            logging.debug("Logout.")
         else:
             logging.error("Failed to logout.")
             raise Exception("Failed to logout.")
@@ -113,7 +113,7 @@ class Fudan:
         """
         self.logout()
         self.session.close()
-        logging.info("Session closed.")
+        logging.debug("Session closed.")
 
 class Zlapp(Fudan):
     last_info = ''
