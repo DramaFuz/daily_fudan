@@ -5,6 +5,7 @@ from lxml import etree
 from requests import session
 import smtplib
 from email.mime.text import MIMEText
+from captcha_break import DailyFDCaptcha
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
@@ -144,7 +145,7 @@ class Zlapp(Fudan):
             SUCCESS = False
             self.last_info = last_info["d"]["info"]
 
-    def submit(self):
+    def submit(self, captcha: DailyFDCaptcha):
         """
         提交
         """
@@ -174,14 +175,25 @@ class Zlapp(Fudan):
                 }
         )
 
-        save = self.session.post(
-                'https://zlapp.fudan.edu.cn/ncov/wap/fudan/save',
-                data=self.last_info,
-                headers=headers,
-                allow_redirects=False)
+        for i in range(3):
+            captcha_text = captcha()
+            if not captcha_text:
+                continue
+            self.last_info.update({
+                'sfzx': 1,
+                'code': captcha_text
+            })
+            
+            save = self.session.post(
+                    'https://zlapp.fudan.edu.cn/ncov/wap/fudan/save',
+                    data=self.last_info,
+                    headers=headers,
+                    allow_redirects=False)
 
-        save_msg = json_loads(save.text)["m"]
-        logging.info(save_msg)
+            save_msg = json_loads(save.text)["m"]
+            logging.info(save_msg)
+            if save_msg != '验证码错误':
+                break
 
 def send_mail():
     logging.info('Sending email...')
@@ -205,11 +217,13 @@ def send_mail():
 if __name__ == '__main__':
     try:
         uid, psw = sys_argv[1].strip().split(' ')
+        captcha_uname, captcha_pwd = sys_argv[3].strip().split(' ')
         daily_fudan = Zlapp(uid, psw)
         daily_fudan.login()
         daily_fudan.check()
         if not SUCCESS:
-            daily_fudan.submit()
+            captcha = DailyFDCaptcha(captcha_uname, captcha_pwd, daily_fudan)
+            daily_fudan.submit(captcha)
             daily_fudan.check()
         daily_fudan.close()
     except:
