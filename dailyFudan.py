@@ -118,6 +118,7 @@ class Fudan:
 
 class Zlapp(Fudan):
     last_info = ''
+    status_sfzx = ''
 
     def check(self):
         """
@@ -133,6 +134,9 @@ class Zlapp(Fudan):
         position = json_loads(position)
 
         logging.info("Last address: %s" % position['formattedAddress'])
+
+        self.status_sfzx = last_info["d"]["oldInfo"]["sfzx"]
+        logging.info("Last status of sfzx: %s" % self.status_sfzx)
 
         today = time.strftime("%Y%m%d", time.localtime())
         
@@ -180,7 +184,7 @@ class Zlapp(Fudan):
             if not captcha_text:
                 continue
             self.last_info.update({
-                'sfzx': 1,
+                'sfzx': self.status_sfzx,
                 'code': captcha_text
             })
             
