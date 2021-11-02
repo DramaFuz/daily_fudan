@@ -198,7 +198,7 @@ class Zlapp(Fudan):
             logging.info(save_msg)
             if save_msg != '验证码错误':
                 break
-
+'''
 def send_mail():
     logging.info('Sending email...')
     mail_sender, mail_psw, mail_receiver = sys_argv[2].strip().split(' ')
@@ -217,11 +217,12 @@ def send_mail():
         logging.info('Email sent.')
     except:
         logging.error('Failed to send email.')
+'''
 
 if __name__ == '__main__':
     try:
         uid, psw = sys_argv[1].strip().split(' ')
-        captcha_uname, captcha_pwd = sys_argv[3].strip().split(' ')
+        captcha_uname, captcha_pwd = sys_argv[2].strip().split(' ')
         daily_fudan = Zlapp(uid, psw)
         daily_fudan.login()
         daily_fudan.check()
