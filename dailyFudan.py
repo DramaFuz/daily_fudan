@@ -233,6 +233,7 @@ if __name__ == '__main__':
     except:
         logging.exception('打卡失败！')
         SUCCESS = False
-    
+    '''
     if not SUCCESS:
         send_mail()
+    '''
