@@ -1,6 +1,7 @@
 import base64
 import requests
 import json
+import logging
 
 def base64_api(uname, pwd, img, typeid):
     base64_data = base64.b64encode(img)
@@ -40,6 +41,8 @@ class DailyFDCaptcha:
         img = getCaptchaData(self.zlapp)
         result = base64_api(self.uname, self.pwd, img, self.typeid)
         if result['success']:
+            logging.info("Sucessfully get Captcha Result.")
             return result["data"]["result"]
         else:
+            logging.info("Error get Captcha Result.")
             return None
