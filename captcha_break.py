@@ -2,6 +2,7 @@ import base64
 import requests
 import json
 import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
 def base64_api(uname, pwd, img, typeid):
     base64_data = base64.b64encode(img)
